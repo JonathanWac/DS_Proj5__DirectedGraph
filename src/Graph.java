@@ -3,7 +3,7 @@
 // Author      : Jonathan Wachholz (JHW190002)
 // Course	   : UTDallas CS 3345.002 Fall 2020
 // Version     : 1.0
-// Copyright   : Oct. 2020
+// Copyright   : Nov. 2020
 // Description :
 //         A Class representing a DirectedGraph.
 //         Any operation involving a shortest path will only occur if the isDirected value is false
@@ -20,16 +20,17 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
-
 public class Graph {
     private String graphName;
+    //The nodeslist is currently not necessary for this class, however I am keeping it is useful so that the user can see the original
+    //      list of Nodes that were first added into the graph
     private LinkedList<GraphNode> nodesListOrig;
     private HashMap<String, Integer> indexMap;
     private boolean isDirected = false;
 
     // A list of all of the edge connections between nodes
     private ArrayList<Edge> edgeList;
-    private ArrayList<Edge> shortestPath;
+    private ArrayList<Edge> minSpanTreePath;
     private int nodeAmount = 0;
 
     /**
@@ -45,48 +46,48 @@ public class Graph {
     }
 
     /**
-     * Will try to generate a shortest path and if it exists will print it
+     * Will try to generate a Min Spanning Tree and if it exists will print it
      */
-    public void printShortestPath(){
-        findShortestPath();
-        if (shortestPath == null){
-            System.out.println("\tCannot print shortest path");
+    public void printMinSpanningTree(){
+        findMinSpanningTree();
+        if (minSpanTreePath == null){
+            System.out.println("\tCannot print the MST");
         }
         else{
-            System.out.printf("Shortest path of %s\n", this.graphName);
-            for (Edge edge: shortestPath){
+            System.out.printf("MST of %s\n", this.graphName);
+            for (Edge edge: minSpanTreePath){
                 System.out.println(edge);
             }
-            printSPDistance();
+            printSpanningTreeDistance();
         }
     }
 
     /**
-     * Will try to generate a shortest path and if it exists will sum the distances
+     * Will try to generate a Min Spanning Tree and if it exists will sum the distances
      */
-    public void printSPDistance(){
-        findShortestPath();
-        if (shortestPath == null){
-            System.out.println("\tCannot print shortest path");
+    public void printSpanningTreeDistance(){
+        findMinSpanningTree();
+        if (minSpanTreePath == null){
+            System.out.println("\tCannot print the MST distance");
         }
         else{
-            System.out.printf("Shortest path distance of %s is ", this.graphName);
+            System.out.printf("MST distance of %s is ", this.graphName);
             double totalDistance = 0.0;
-            for (Edge edge: shortestPath){
+            for (Edge edge: minSpanTreePath){
                 totalDistance += edge.getDistance();
             }
             System.out.printf("%.2f\n", totalDistance);
         }
     }
 
-    /**
-     * @return the List containing the edges from the shortest path
+    /** This method uses the Disjsets and PriorityQueue classes to operate
+     * @return the List containing the edges from the Min Spanning Tree
      */
-    public ArrayList<Edge> findShortestPath(){
-        if (shortestPath == null){
+    public ArrayList<Edge> findMinSpanningTree(){
+        if (minSpanTreePath == null){
             if (!isDirected){
                 ArrayList<Edge> fixedEdges = correctEdges(this.edgeList);
-                ArrayList<Edge> shortestPath = new ArrayList<>();
+                ArrayList<Edge> MSTList = new ArrayList<>();
                 PriorityQueue<Edge> edgeQueue = fillQueue(fixedEdges);
                 DisjSets sets = new DisjSets(nodeAmount);
                 int count = 0;
@@ -97,15 +98,15 @@ public class Graph {
                     int nodeIndex1 = indexMap.get(edge1.getStartNode()), nodeIndex2 = indexMap.get(edge1.getEndNode());
                     if (sets.find(nodeIndex1) != sets.find(nodeIndex2)){
                         sets.union(sets.find(nodeIndex1), sets.find(nodeIndex2));
-                        shortestPath.add(edge1);
+                        MSTList.add(edge1);
                         count++;
                     }
                     else{
                         continue;
                     }
                 }
-                this.shortestPath = shortestPath;
-                return shortestPath;
+                this.minSpanTreePath = MSTList;
+                return MSTList;
             }
             else{
                 System.out.println("This graph is Directed: meaning either 1 vertex does not have a partner return path or it does but the distances are not the same...");
@@ -113,7 +114,7 @@ public class Graph {
             }
         }
         else{
-            return shortestPath;
+            return minSpanTreePath;
         }
 
     }
@@ -212,10 +213,11 @@ public class Graph {
             }
             inFile.close();
         } catch (FileNotFoundException e) {
+            System.err.printf("Cannot find the filename %s\n", fileName);
             e.printStackTrace();
         } catch (IOException e) {
+            System.err.printf("IOException occurred trying to access filename %s\n", fileName);
             e.printStackTrace();
         }
     }
-
 }

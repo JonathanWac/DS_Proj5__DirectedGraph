@@ -1,3 +1,17 @@
+//====================================================================================================================================================================
+// Name        : Edge.java
+// Author      : Jonathan Wachholz (JHW190002)
+// Course	   : UTDallas CS 3345.002 Fall 2020
+// Version     : 1.0
+// Copyright   : Nov. 2020
+// Description :
+//         A Class representing an Edge on a graph
+//      The edge contains refference variables for the starting node / location, the ending node, the distance between them,
+//      And a boolean value for ignore, used when sorting through edges to create an a MST
+//
+//====================================================================================================================================================================
+
+
 import java.util.Objects;
 
 public class Edge implements Comparable<Edge> {

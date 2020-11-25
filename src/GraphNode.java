@@ -1,3 +1,18 @@
+//====================================================================================================================================================================
+// Name        : GraphNode.java
+// Author      : Jonathan Wachholz (JHW190002)
+// Course	   : UTDallas CS 3345.002 Fall 2020
+// Version     : 1.0
+// Copyright   : Nov. 2020
+// Description :
+//         A Class representing a single node/vertice in a graph
+//      This class is meant to save space in the program by storing the graph in the form of Nodes rather than Edges.
+//          Each instance of a node contains a List holding arrays with the Next Node/Vertex/Location
+//          that this node has a path too, along with the distance to that next location
+//
+//====================================================================================================================================================================
+
+
 import java.util.LinkedList;
 
 public class GraphNode implements Comparable<GraphNode> {
